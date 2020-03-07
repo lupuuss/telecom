@@ -28,6 +28,39 @@ class DoubleErrorDecoder(
         return Pair(-1, -1)
     }
 
+    private fun correctError(codewordColumn: BinaryMatrix, verColumn: BinaryMatrix) {
+
+        print("Error occured => ")
+        val checkSingleError = parityMatrix.findColumn(verColumn)
+
+        if (checkSingleError != -1) {
+            println("Single error correction:\n${codewordColumn.transposed()}")
+
+            codewordColumn.invBit(checkSingleError, 0)
+
+            println(codewordColumn.transposed())
+
+            return
+        }
+
+        val (firstError, secondError) = resolveDoubleError(verColumn)
+
+        if (firstError != -1 && secondError != -1) {
+
+            println("Double Error Correction:\n${codewordColumn.transposed()}")
+
+            codewordColumn.invBit(firstError, 0)
+            codewordColumn.invBit(secondError, 0)
+
+            println(codewordColumn.transposed())
+
+        } else {
+
+            println("Correction failed! Message might be incorrect!")
+        }
+
+    }
+
     override fun decode(input: InputStream, output: OutputStream) {
 
         var msgByte = input.read()
@@ -43,35 +76,9 @@ class DoubleErrorDecoder(
 
             val verificationResult = verColumn.transposed().isZeroVector()
 
-            val checkSingleError = parityMatrix.findColumn(verColumn)
-
             if (!verificationResult) {
 
-                print("Double error occured => ")
-
-                val (firstError, secondError) = resolveDoubleError(verColumn)
-
-                if (firstError != -1 && secondError != -1) {
-
-                    println("Correction: ")
-                    println(codewordColumn.transposed())
-
-                    codewordColumn.invBit(firstError, 0)
-                    codewordColumn.invBit(secondError, 0)
-
-                    println(codewordColumn.transposed())
-                } else {
-                    println("Correction failed! Message might be incorrect!")
-                }
-
-            } else if (!verificationResult && checkSingleError != -1) {
-
-                println("Singe error occured => Correction: ")
-                println(codewordColumn.transposed())
-
-                codewordColumn.invBit(checkSingleError, 0)
-
-                println(codewordColumn.transposed())
+                correctError(codewordColumn, verColumn)
             }
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)
