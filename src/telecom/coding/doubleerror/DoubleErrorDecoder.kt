@@ -5,9 +5,10 @@ import telecom.coding.Decoder
 import java.io.InputStream
 import java.io.OutputStream
 
-class DoubleErrorDecoder(
-    parityMatrix: BinaryMatrix
-) : Decoder(parityMatrix, 16, 0b1111_1111, 8) {
+class DoubleErrorDecoder(parityMatrix: BinaryMatrix,
+                         codeLength: Int,
+                         parityMask: Int,
+                         parityBitsCount: Int) : Decoder(parityMatrix, codeLength, parityMask, parityBitsCount) {
 
     private fun resolveDoubleError(verColumn: BinaryMatrix): Pair<Int, Int> {
 

@@ -28,8 +28,6 @@ fun parseArguments(args: Array<String>): Triple<Coder.Type, Coder.Operation, Pat
         }
     } ?: throw IllegalStateException("Missing path to file!")
 
-
-
     return Triple(coderType, operation,  path)
 }
 

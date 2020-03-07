@@ -18,7 +18,11 @@ class DoubleErrorCoder : Coder {
         intArrayOf(1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1)
     )
 
-    override fun getEncoder(): Encoder = DoubleErrorEncoder(parityMatrix)
+    private val codeLength = 12
+    private val parityBitsCount = 4
+    private val parityMask = 0b1111
 
-    override fun getDecoder(): Decoder = DoubleErrorDecoder(parityMatrix)
+    override fun getEncoder(): Encoder = DoubleErrorEncoder(parityMatrix, codeLength, parityBitsCount)
+
+    override fun getDecoder(): Decoder = DoubleErrorDecoder(parityMatrix, codeLength, parityBitsCount, parityMask)
 }
