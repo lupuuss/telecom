@@ -14,6 +14,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
     init {
         for (row in matrix) {
             for (bit in row) {
+
                 if (bit != 0 && bit != 1) {
                     throw IllegalArgumentException("Binary matrix can contain only 0 and 1")
                 }
@@ -80,7 +81,9 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
         }
 
         for (col in getColumnsIndices()) {
+
             var bad = false
+
             for (row in getRowsIndices()) {
 
                 if (this[row][col] != column[row][0]) {

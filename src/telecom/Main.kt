@@ -50,11 +50,8 @@ fun main(args: Array<String>) {
     val input = path.toFile().inputStream()
 
     if (operation == Coder.Operation.Encode) {
-
-
         coder.getEncoder().encode(input, output)
     } else {
-
         coder.getDecoder().decode(input, output)
     }
 
