@@ -14,9 +14,11 @@ abstract class Encoder(
 ) {
     open fun encode(input: InputStream, output: OutputStream) {
 
-        do {
+        while (true) {
 
             val byte = input.read()
+
+            if (byte == -1) return
 
             val codeword = byte shl parityBitsCount
 
@@ -29,6 +31,6 @@ abstract class Encoder(
             output.write(byte)
             output.write(parity)
 
-        } while (byte != -1)
+        }
     }
 }

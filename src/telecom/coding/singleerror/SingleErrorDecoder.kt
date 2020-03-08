@@ -16,10 +16,12 @@ class SingleErrorDecoder(
 
     override fun decode(input: InputStream, output: OutputStream) {
 
-        do {
+        while (true) {
 
             val msgByte = input.read()
             val parityByte = input.read()
+
+            if (parityByte == -1) break
 
             val codeword = mergeMessageAndParity(msgByte, parityByte)
 
@@ -52,6 +54,6 @@ class SingleErrorDecoder(
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)
 
-        } while (parityByte != -1)
+        }
     }
 }

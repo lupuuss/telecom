@@ -66,10 +66,12 @@ class DoubleErrorDecoder(
 
     override fun decode(input: InputStream, output: OutputStream) {
 
-        do {
+        while (true) {
 
             val msgByte = input.read()
             val parityByte = input.read()
+
+            if (parityByte == -1) return
 
             val codeword: Int = mergeMessageAndParity(msgByte, parityByte)
 
@@ -86,7 +88,7 @@ class DoubleErrorDecoder(
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)
 
-        } while (parityByte != -1)
+        }
     }
 
 }
