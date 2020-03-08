@@ -28,17 +28,17 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
      * @param col bit column in matrix
      */
     fun invBit(row: Int, col: Int) {
-        matrix[row][col] = if (matrix[row][col] == 1) { 0 } else { 1 }
+        matrix[row][col] = if (matrix[row][col] == 1) 0 else 1
     }
 
     /**
      * @return transposed form for given BinaryMatrix
      */
     fun transposed(): BinaryMatrix = new(
-            *Array(matrix[0].size) { row ->
-                IntArray(matrix.size) { matrix[it][row] }
-            }
-        )
+        *Array(matrix[0].size) { row ->
+            IntArray(matrix.size) { matrix[it][row] }
+        }
+    )
 
     fun rows() = size.first
 
@@ -139,11 +139,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
          */
         fun new(vararg rows: IntArray) = BinaryMatrix(rows)
 
-        fun empty(rows: Int, cols: Int) = new(
-            * generateSequence {
-                IntArray(cols) { 0 }
-            }.take(rows).toList().toTypedArray()
-        )
+        fun empty(rows: Int, cols: Int) = new(*Array(rows) { IntArray(cols) { 0 } })
     }
 }
 
@@ -205,7 +201,7 @@ fun Int.toBinaryColumn(n: Int): BinaryMatrix {
 
     for (i in 1..n) {
         bits.add(number % 2)
-        number = number.shr(1)
+        number = number shr 1
     }
 
     return BinaryMatrix.column(*bits.reversed().toIntArray())
@@ -215,13 +211,14 @@ fun Int.toBinaryColumn(n: Int): BinaryMatrix {
  * Converts integer to binary vector. Highest bit is in the first column.
  * @return integer in binary form (as column of ones and zeros).
  */
+@Suppress("unused")
 fun Int.toBinaryVector(n: Int): BinaryMatrix {
     val bits = mutableListOf<Int>()
     var number = this
 
     for (i in 1..n) {
         bits.add(number % 2)
-        number = number.shr(1)
+        number = number shr 1
     }
 
     return BinaryMatrix.vector(*bits.toIntArray())

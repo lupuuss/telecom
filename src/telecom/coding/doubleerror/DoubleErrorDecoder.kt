@@ -5,10 +5,12 @@ import telecom.coding.Decoder
 import java.io.InputStream
 import java.io.OutputStream
 
-class DoubleErrorDecoder(parityMatrix: BinaryMatrix,
-                         codeLength: Int,
-                         parityMask: Int,
-                         parityBitsCount: Int) : Decoder(parityMatrix, codeLength, parityMask, parityBitsCount) {
+class DoubleErrorDecoder(
+    parityMatrix: BinaryMatrix,
+    codeLength: Int,
+    parityMask: Int,
+    parityBitsCount: Int
+) : Decoder(parityMatrix, codeLength, parityMask, parityBitsCount) {
 
     private fun resolveDoubleError(verColumn: BinaryMatrix): Pair<Int, Int> {
 
@@ -64,12 +66,12 @@ class DoubleErrorDecoder(parityMatrix: BinaryMatrix,
 
     override fun decode(input: InputStream, output: OutputStream) {
 
-        var msgByte = input.read()
-        var parityByte = input.read()
-
         do {
 
-            val codeword = mergeMessageAndParity(msgByte, parityByte)
+            val msgByte = input.read()
+            val parityByte = input.read()
+
+            val codeword: Int = mergeMessageAndParity(msgByte, parityByte)
 
             val codewordColumn = codeword.toBinaryColumn(codeLength)
 
@@ -83,9 +85,6 @@ class DoubleErrorDecoder(parityMatrix: BinaryMatrix,
             }
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)
-
-            msgByte = input.read()
-            parityByte = input.read()
 
         } while (parityByte != -1)
     }

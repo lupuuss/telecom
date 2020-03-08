@@ -19,6 +19,7 @@ interface Coder {
     fun getDecoder(): Decoder
 
     companion object {
+
         private val singleError = SingleErrorCoder()
         private val doubleError = DoubleErrorCoder()
 

@@ -7,17 +7,19 @@ import telecom.coding.Decoder
 import java.io.InputStream
 import java.io.OutputStream
 
-class SingleErrorDecoder(parityMatrix: BinaryMatrix,
-                         codeLength: Int,
-                         parityMask: Int,
-                         parityBitsCount: Int) : Decoder(parityMatrix, codeLength, parityMask, parityBitsCount) {
+class SingleErrorDecoder(
+    parityMatrix: BinaryMatrix,
+    codeLength: Int,
+    parityMask: Int,
+    parityBitsCount: Int
+) : Decoder(parityMatrix, codeLength, parityMask, parityBitsCount) {
 
     override fun decode(input: InputStream, output: OutputStream) {
 
-        var msgByte = input.read()
-        var parityByte = input.read()
-
         do {
+
+            val msgByte = input.read()
+            val parityByte = input.read()
 
             val codeword = mergeMessageAndParity(msgByte, parityByte)
 
@@ -49,9 +51,6 @@ class SingleErrorDecoder(parityMatrix: BinaryMatrix,
             }
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)
-
-            msgByte = input.read()
-            parityByte = input.read()
 
         } while (parityByte != -1)
     }
