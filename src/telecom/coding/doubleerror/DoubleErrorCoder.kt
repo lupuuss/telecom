@@ -24,5 +24,5 @@ class DoubleErrorCoder : Coder {
 
     override fun getEncoder(): Encoder = DoubleErrorEncoder(parityMatrix, codeLength, parityBitsCount)
 
-    override fun getDecoder(): Decoder = DoubleErrorDecoder(parityMatrix, codeLength, parityBitsCount, parityMask)
+    override fun getDecoder(): Decoder = DoubleErrorDecoder(parityMatrix, codeLength, parityMask, parityBitsCount)
 }
