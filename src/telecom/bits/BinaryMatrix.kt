@@ -149,7 +149,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
 operator fun BinaryMatrix.times(rhs: BinaryMatrix): BinaryMatrix {
 
     if (cols() != rhs.rows()) {
-        throw IllegalArgumentException("Incompatible matrices!")
+        throw IllegalArgumentException("Incompatible matrices! $this // $rhs")
     }
 
     val result = BinaryMatrix.new(*Array(rows()) { IntArray(rhs.cols()) { 0 } })
