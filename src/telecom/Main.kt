@@ -9,8 +9,17 @@ fun main(args: Array<String>) {
 
     val (type, operation, path) = try {
         Utils.parseArguments(args)
-    } catch (e: Exception) {
+    } catch (e: ArgumentsParseException) {
+
         println("Bad args => ${e.message}")
+        println("Use --help to get the options!")
+        return
+    } catch (e: HelpRequired) {
+        println(helpMsg)
+        return
+    } catch (e: Exception) {
+        println("Unexpected error occured! Stack trace: ")
+        e.printStackTrace()
         return
     }
 
@@ -32,3 +41,16 @@ fun main(args: Array<String>) {
     }
 
 }
+
+private val helpMsg = """
+            Usage: telecom INPUT [Options]
+                
+            Arguments:
+                INPUT - File to decode/encode
+            
+            Options:
+                --single, -1 - Single error correction
+                --double, -2 - Double error correction
+                --encode, -e - Encoding
+                --decode, -d - Decoding
+        """.trimIndent()

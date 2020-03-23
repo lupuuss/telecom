@@ -6,6 +6,7 @@ import java.nio.file.InvalidPathException
 import java.nio.file.Path
 
 class ArgumentsParseException(msg: String) : Exception(msg)
+class HelpRequired : Exception()
 
 object Utils {
 
@@ -22,6 +23,7 @@ object Utils {
                 "--double", "-2" -> coderType = Coder.Type.DoubleError
                 "--decode", "-d" -> operation = Coder.Operation.Decode
                 "--encode", "-e" -> operation = Coder.Operation.Encode
+                "--help", "-h" -> throw HelpRequired()
                 else -> path = try {
                     Path.of(arg)
                 } catch (e: InvalidPathException) {
