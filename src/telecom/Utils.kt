@@ -5,6 +5,7 @@ import java.io.File
 import java.lang.Exception
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
+import java.nio.file.Paths
 
 class ArgumentsParseException(msg: String) : Exception(msg)
 class HelpRequired : Exception()
@@ -26,7 +27,7 @@ object Utils {
                 "--encode", "-e" -> operation = Coder.Operation.Encode
                 "--help", "-h" -> throw HelpRequired()
                 else -> path = try {
-                    Path.of(arg)
+                    Paths.get(arg)
                 } catch (e: InvalidPathException) {
                     throw ArgumentsParseException("Unexpected token: $arg")
                 }
@@ -51,9 +52,9 @@ object Utils {
         val op = operation.toString().toLowerCase()
 
         val outputFileName = "${inputFile.nameWithoutExtension}_$op$extension"
-        val outputDir = inputPath.parent ?: Path.of("")
+        val outputDir = inputPath.parent ?: Paths.get("")
 
-        val outputFile: File = Path.of(outputDir.toString(), outputFileName).toFile()
+        val outputFile: File = Paths.get(outputDir.toString(), outputFileName).toFile()
 
         if (!outputFile.exists()) {
             outputFile.createNewFile()

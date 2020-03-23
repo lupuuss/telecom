@@ -88,13 +88,10 @@ class DoubleErrorDecoder(
 
             val verificationResult = verColumn.transposed().isZeroVector()
 
-            if (!verificationResult) {
-
-                if (correctError(codewordColumn, verColumn)) {
-                    errorCorrected++
-                } else {
-                    errorUnsolved++
-                }
+            if (!verificationResult && correctError(codewordColumn, verColumn)) {
+                errorCorrected++
+            } else if (!verificationResult) {
+                errorUnsolved++
             }
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)

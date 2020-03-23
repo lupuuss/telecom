@@ -35,8 +35,7 @@ class SingleErrorDecoder(
 
             if (!verColumn.transposed().isZeroVector()) {
 
-                println()
-                print("Error occured => ")
+                print("\nError occured => ")
 
                 val badBitIndex = parityMatrix.findColumn(verColumn)
 

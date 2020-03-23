@@ -3,7 +3,7 @@ package telecom.bits
 import java.lang.IllegalArgumentException
 
 /**
- * Stores a binary matrix as arrays of integers and provides part of standard
+ * Stores a binary matrix as arrays of bytes and provides part of standard
  * matrix operations (multiplication, transposition) and useful binary operations for
  * error correction.
  */
@@ -14,9 +14,9 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
     init {
         for (row in matrix) {
 
-            for (bit in row.asStream().map { it.toInt() }) {
+            for (bit in row) {
 
-                if (bit != 0 && bit != 1) {
+                if (bit.toInt() != 0 && bit.toInt() != 1) {
                     throw IllegalArgumentException("Any binary matrix can contain only 0 and 1")
                 }
             }
@@ -36,8 +36,8 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
      * @return transposed form for given BinaryMatrix
      */
     fun transposed(): BinaryMatrix = new(
-        *Array(matrix[0].size) { row ->
-            ByteArray(matrix.size) { matrix[it][row] }
+        *Array(cols()) { row ->
+            ByteArray(rows()) { col -> matrix[col][row] }
         }
     )
 
@@ -74,7 +74,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
     fun findColumn(column: BinaryMatrix): Int {
 
         if (column.cols() != 1) {
-            throw IllegalArgumentException("THe passed matrix is not a column!")
+            throw IllegalArgumentException("The passed matrix is not a column!")
         }
 
         if (rows() != column.rows()) {
@@ -128,6 +128,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
          * @return one-column BinaryMatrix for given values
          */
         fun column(vararg values: Byte) = BinaryMatrix(Array(values.size) { byteArrayOf(values[it]) })
+
 
         /**
          * @param values for vector (only zeros and ones)
