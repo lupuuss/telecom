@@ -4,6 +4,7 @@ import telecom.coding.Coder
 import java.io.File
 import java.lang.Exception
 import java.nio.file.Path
+import java.nio.file.Paths
 
 fun main(args: Array<String>) {
 
@@ -28,9 +29,10 @@ fun main(args: Array<String>) {
     val extension = inputPath.toFile().extension.let { if (it.isEmpty()) "" else ".$it" }
     val op = operation.toString().toLowerCase()
 
-    val outputFileName = "${inputPath.fileName}_$op$extension"
+    val outputFileName = "${inputPath.toFile().nameWithoutExtension}_$op$extension"
+    val outputDir = inputPath.parent ?: Path.of("")
 
-    val outputFile: File = Path.of(inputPath.parent.toString(), outputFileName).toFile()
+    val outputFile: File = Path.of(outputDir.toString(), outputFileName).toFile()
 
     if (!outputFile.exists()) {
         outputFile.createNewFile()
