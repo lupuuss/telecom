@@ -13,7 +13,7 @@ object Utils {
     @Throws(ArgumentsParseException::class)
     fun parseArguments(args: Array<String>): Triple<Coder.Type, Coder.Operation, Path> {
 
-        var coderType = Coder.Type.SingleError
+        var coderType = Coder.Type.DoubleError
         var operation = Coder.Operation.Encode
         var path: Path? = null
 
@@ -38,7 +38,7 @@ object Utils {
                 throw ArgumentsParseException("Path $path does not exist!")
             }
 
-        } ?: throw ArgumentsParseException("Missing path to file!")
+        } ?: throw ArgumentsParseException("A missing path to file!")
 
         return Triple(coderType, operation, path)
     }

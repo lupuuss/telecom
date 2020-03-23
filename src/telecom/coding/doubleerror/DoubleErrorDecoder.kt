@@ -31,8 +31,9 @@ class DoubleErrorDecoder(
         return Pair(-1, -1)
     }
 
-    private fun correctError(codewordColumn: BinaryMatrix, verColumn: BinaryMatrix) {
+    private fun correctError(codewordColumn: BinaryMatrix, verColumn: BinaryMatrix): Boolean {
 
+        println()
         print("Error occured => ")
         val checkSingleError = parityMatrix.findColumn(verColumn)
 
@@ -43,7 +44,7 @@ class DoubleErrorDecoder(
 
             println(codewordColumn.transposed())
 
-            return
+            return true
         }
 
         val (firstError, secondError) = resolveDoubleError(verColumn)
@@ -57,21 +58,27 @@ class DoubleErrorDecoder(
 
             println(codewordColumn.transposed())
 
+            return true
+
         } else {
 
             println("Correction failed! Message might be incorrect!")
+
+            return false
         }
 
     }
 
-    override fun decode(input: InputStream, output: OutputStream) {
+    override fun decode(input: InputStream, output: OutputStream): Pair<Int, Int> {
 
+        var errorCorrected = 0
+        var errorUnsolved = 0
         while (true) {
 
             val msgByte = input.read()
             val parityByte = input.read()
 
-            if (parityByte == -1) return
+            if (parityByte == -1) return errorCorrected to errorUnsolved
 
             val codeword: Int = mergeMessageAndParity(msgByte, parityByte)
 
@@ -83,7 +90,11 @@ class DoubleErrorDecoder(
 
             if (!verificationResult) {
 
-                correctError(codewordColumn, verColumn)
+                if (correctError(codewordColumn, verColumn)) {
+                    errorCorrected++
+                } else {
+                    errorUnsolved++
+                }
             }
 
             output.write(codewordColumn.transposed().vectorAsNumber() shr parityBitsCount)

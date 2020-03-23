@@ -14,14 +14,17 @@ class SingleErrorDecoder(
     parityBitsCount: Int
 ) : Decoder(parityMatrix, codeLength, parityMask, parityBitsCount) {
 
-    override fun decode(input: InputStream, output: OutputStream) {
+    override fun decode(input: InputStream, output: OutputStream): Pair<Int, Int> {
+
+        var errorCorrected = 0
+        var errorUnsolved = 0
 
         while (true) {
 
             val msgByte = input.read()
             val parityByte = input.read()
 
-            if (parityByte == -1) break
+            if (parityByte == -1) return errorCorrected to errorUnsolved
 
             val codeword = mergeMessageAndParity(msgByte, parityByte)
 
@@ -32,6 +35,7 @@ class SingleErrorDecoder(
 
             if (!verColumn.transposed().isZeroVector()) {
 
+                println()
                 print("Error occured => ")
 
                 val badBitIndex = parityMatrix.findColumn(verColumn)
@@ -39,6 +43,7 @@ class SingleErrorDecoder(
                 if (badBitIndex == -1) {
 
                     println("Error correction failed! Message might be incorrect!")
+                    errorUnsolved++
 
                 } else {
 
@@ -49,6 +54,7 @@ class SingleErrorDecoder(
 
                     println(codewordColumn.transposed())
                     println()
+                    errorCorrected++
                 }
             }
 

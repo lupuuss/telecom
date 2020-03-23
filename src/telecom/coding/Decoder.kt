@@ -15,7 +15,7 @@ abstract class Decoder(
     protected fun mergeMessageAndParity(msg: Int, parity: Int) = (msg shl parityBitsCount) or (parity and parityMask)
 
     @Throws(DecodingException::class)
-    abstract fun decode(input: InputStream, output: OutputStream)
+    abstract fun decode(input: InputStream, output: OutputStream): Pair<Int, Int>
 }
 
 class DecodingException(msg: String) : Exception(msg)
