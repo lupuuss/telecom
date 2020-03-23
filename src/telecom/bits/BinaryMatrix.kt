@@ -14,10 +14,10 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
     init {
         for (row in matrix) {
 
-            for (bit in row.asStream().mapToInt { it.toInt() }) {
+            for (bit in row.asStream().map { it.toInt() }) {
 
                 if (bit != 0 && bit != 1) {
-                    throw IllegalArgumentException("Binary matrix can contain only 0 and 1")
+                    throw IllegalArgumentException("Any binary matrix can contain only 0 and 1")
                 }
             }
         }
