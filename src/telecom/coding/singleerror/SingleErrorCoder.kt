@@ -8,10 +8,10 @@ import telecom.coding.Encoder
 class SingleErrorCoder : Coder {
 
     private val parityMatrix = BinaryMatrix.new(
-        intArrayOf(0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0),
-        intArrayOf(1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0),
-        intArrayOf(1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0),
-        intArrayOf(1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1)
+        byteArrayOf(0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0),
+        byteArrayOf(1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0),
+        byteArrayOf(1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0),
+        byteArrayOf(1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1)
     )
 
     private val codeLength = 12

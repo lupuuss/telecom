@@ -3,17 +3,18 @@ package telecom.bits
 import java.lang.IllegalArgumentException
 
 /**
- * Stores binary matrix as arrays of integers and provides part of standard
+ * Stores a binary matrix as arrays of integers and provides part of standard
  * matrix operations (multiplication, transposition) and useful binary operations for
  * error correction.
  */
-class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) {
+class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>) {
 
     private val size = matrix.size to matrix.first().size
 
     init {
         for (row in matrix) {
-            for (bit in row) {
+
+            for (bit in row.asStream().mapToInt { it.toInt() }) {
 
                 if (bit != 0 && bit != 1) {
                     throw IllegalArgumentException("Binary matrix can contain only 0 and 1")
@@ -28,7 +29,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
      * @param col bit column in matrix
      */
     fun invBit(row: Int, col: Int) {
-        matrix[row][col] = if (matrix[row][col] == 1) 0 else 1
+        matrix[row][col] = if (matrix[row][col].toInt() == 1) 0 else 1
     }
 
     /**
@@ -36,7 +37,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
      */
     fun transposed(): BinaryMatrix = new(
         *Array(matrix[0].size) { row ->
-            IntArray(matrix.size) { matrix[it][row] }
+            ByteArray(matrix.size) { matrix[it][row] }
         }
     )
 
@@ -44,9 +45,9 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
 
     fun cols() = size.second
 
-    fun getRow(row: Int): IntArray = matrix[row]
+    fun getRow(row: Int): ByteArray = matrix[row]
 
-    fun getColumnAsMatrix(column: Int) = column(*IntArray(rows()) { this[it][column] })
+    fun getColumnAsMatrix(column: Int) = column(*ByteArray(rows()) { this[it][column] })
 
     fun getRowsIndices() = matrix.indices
 
@@ -68,16 +69,16 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
     }
 
     /**
-     * @return index of given column in matrix. If it does not present, -1 is returned
+     * @return index of given column in the matrix. If it does not present, -1 is returned
      */
     fun findColumn(column: BinaryMatrix): Int {
 
         if (column.cols() != 1) {
-            throw IllegalArgumentException("Passed matrix is not a column!")
+            throw IllegalArgumentException("THe passed matrix is not a column!")
         }
 
         if (rows() != column.rows()) {
-            throw IllegalArgumentException("Column has incompatible length to matrix!")
+            throw IllegalArgumentException("The column has incompatible length to matrix!")
         }
 
         for (col in getColumnsIndices()) {
@@ -106,7 +107,8 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
     fun isZeroVector(): Boolean {
 
         for (bit in matrix[0]) {
-            if (bit != 0) {
+
+            if (bit.toInt() != 0) {
                 return false
             }
         }
@@ -125,21 +127,21 @@ class BinaryMatrix private constructor(private val matrix: Array<out IntArray>) 
          * @param values for column (only zeros and ones)
          * @return one-column BinaryMatrix for given values
          */
-        fun column(vararg values: Int) = BinaryMatrix(Array(values.size) { intArrayOf(values[it]) })
+        fun column(vararg values: Byte) = BinaryMatrix(Array(values.size) { byteArrayOf(values[it]) })
 
         /**
          * @param values for vector (only zeros and ones)
          * @return one-row BinaryMatrix for given values
          */
-        fun vector(vararg values: Int) = BinaryMatrix(arrayOf(values))
+        fun vector(vararg values: Byte) = BinaryMatrix(arrayOf(values))
 
         /**
          * @param rows for matrix (only zeros and ones)
          * @return BinaryMatrix for given rows
          */
-        fun new(vararg rows: IntArray) = BinaryMatrix(rows)
+        fun new(vararg rows: ByteArray) = BinaryMatrix(rows)
 
-        fun empty(rows: Int, cols: Int) = new(*Array(rows) { IntArray(cols) { 0 } })
+        fun empty(rows: Int, cols: Int) = new(*Array(rows) { ByteArray(cols) { 0 } })
     }
 }
 
@@ -152,12 +154,12 @@ operator fun BinaryMatrix.times(rhs: BinaryMatrix): BinaryMatrix {
         throw IllegalArgumentException("Incompatible matrices! $this // $rhs")
     }
 
-    val result = BinaryMatrix.new(*Array(rows()) { IntArray(rhs.cols()) { 0 } })
+    val result = BinaryMatrix.new(*Array(rows()) { ByteArray(rhs.cols()) { 0 } })
 
     for (i in this.getRowsIndices()) {
 
         for (j in rhs.getColumnsIndices()) {
-            var tmp = 0
+            var tmp: Byte = 0
 
             for (k in rhs.getRowsIndices()) {
 
@@ -170,7 +172,7 @@ operator fun BinaryMatrix.times(rhs: BinaryMatrix): BinaryMatrix {
     return result
 }
 
-operator fun BinaryMatrix.get(index: Int): IntArray = this.getRow(index)
+operator fun BinaryMatrix.get(index: Int): ByteArray = this.getRow(index)
 
 infix fun BinaryMatrix.xor(rhs: BinaryMatrix): BinaryMatrix {
 
@@ -196,15 +198,15 @@ infix fun BinaryMatrix.xor(rhs: BinaryMatrix): BinaryMatrix {
  * @return integer in binary form (as column of ones and zeros).
  */
 fun Int.toBinaryColumn(n: Int): BinaryMatrix {
-    val bits = mutableListOf<Int>()
+    val bits = mutableListOf<Byte>()
     var number = this
 
     for (i in 1..n) {
-        bits.add(number % 2)
+        bits.add((number % 2).toByte())
         number = number shr 1
     }
 
-    return BinaryMatrix.column(*bits.reversed().toIntArray())
+    return BinaryMatrix.column(*bits.reversed().toByteArray())
 }
 
 /**
@@ -213,13 +215,13 @@ fun Int.toBinaryColumn(n: Int): BinaryMatrix {
  */
 @Suppress("unused")
 fun Int.toBinaryVector(n: Int): BinaryMatrix {
-    val bits = mutableListOf<Int>()
+    val bits = mutableListOf<Byte>()
     var number = this
 
-    for (i in 1..n) {
-        bits.add(number % 2)
+    for (i in (1..n)) {
+        bits.add((number % 2).toByte())
         number = number shr 1
     }
 
-    return BinaryMatrix.vector(*bits.toIntArray())
+    return BinaryMatrix.vector(*bits.toByteArray())
 }
