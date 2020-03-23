@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
         println(helpMsg)
         return
     } catch (e: Exception) {
-        println("Unexpected error occured! Stack trace: ")
+        println("Unexpected error occurred! Stack trace: ")
         e.printStackTrace()
         return
     }
