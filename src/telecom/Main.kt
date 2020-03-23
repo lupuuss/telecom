@@ -7,7 +7,7 @@ import java.nio.file.Path
 
 fun main(args: Array<String>) {
 
-    val (type, operation, path) = try {
+    val (type, operation, inputPath) = try {
         Utils.parseArguments(args)
     } catch (e: ArgumentsParseException) {
 
@@ -25,14 +25,19 @@ fun main(args: Array<String>) {
 
     val coder = Coder.getByType(type)
 
-    val outputFile: File = Path.of(path.parent.toString(), "output.txt").toFile()
+    val extension = inputPath.toFile().extension.let { if (it.isEmpty()) "" else ".$it" }
+    val op = operation.toString().toLowerCase()
+
+    val outputFileName = "${inputPath.fileName}_$op$extension"
+
+    val outputFile: File = Path.of(inputPath.parent.toString(), outputFileName).toFile()
 
     if (!outputFile.exists()) {
         outputFile.createNewFile()
     }
 
     val output = outputFile.outputStream()
-    val input = path.toFile().inputStream()
+    val input = inputPath.toFile().inputStream()
 
     if (operation == Coder.Operation.Encode) {
         coder.getEncoder().encode(input, output)
