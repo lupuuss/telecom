@@ -23,19 +23,8 @@ fun main(args: Array<String>) {
         return
     }
 
-    val extension = inputPath.toFile().extension.let { if (it.isEmpty()) "" else ".$it" }
-    val op = operation.toString().toLowerCase()
 
-    val outputFileName = "${inputPath.toFile().nameWithoutExtension}_$op$extension"
-    val outputDir = inputPath.parent ?: Path.of("")
-
-    val outputFile: File = Path.of(outputDir.toString(), outputFileName).toFile()
-
-    if (!outputFile.exists()) {
-        outputFile.createNewFile()
-    }
-
-    val output = outputFile.outputStream()
+    val output = Utils.generateOutputFileForInput(inputPath, operation).outputStream()
     val input = inputPath.toFile().inputStream()
 
     val typeVerb = operation.toString().let { it.substring(0, it.lastIndex) }
@@ -47,11 +36,13 @@ fun main(args: Array<String>) {
     val coder = Coder.getByType(type)
 
     if (operation == Coder.Operation.Encode) {
+        // Encoding part
         coder.getEncoder().encode(input, output)
         println("Finished!")
         return
     }
 
+    // Decoding part
     val (corrected, unsolved) = coder.getDecoder().decode(input, output)
 
     println()

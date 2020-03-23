@@ -1,6 +1,7 @@
 package telecom
 
 import telecom.coding.Coder
+import java.io.File
 import java.lang.Exception
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
@@ -41,5 +42,23 @@ object Utils {
         } ?: throw ArgumentsParseException("A missing path to file!")
 
         return Triple(coderType, operation, path)
+    }
+
+    fun generateOutputFileForInput(inputPath: Path, operation: Coder.Operation): File {
+
+        val inputFile = inputPath.toFile()
+        val extension = inputFile.extension.let { if (it.isEmpty()) "" else ".$it" }
+        val op = operation.toString().toLowerCase()
+
+        val outputFileName = "${inputFile.nameWithoutExtension}_$op$extension"
+        val outputDir = inputPath.parent ?: Path.of("")
+
+        val outputFile: File = Path.of(outputDir.toString(), outputFileName).toFile()
+
+        if (!outputFile.exists()) {
+            outputFile.createNewFile()
+        }
+
+        return outputFile
     }
 }
