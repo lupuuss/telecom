@@ -62,7 +62,7 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
 
         val reversedRow = matrix[0].reversedArray()
         for (bitIndex in reversedRow.indices) {
-            number += reversedRow[bitIndex] shl bitIndex
+            number += reversedRow[bitIndex].toInt() shl bitIndex
         }
 
         return number
