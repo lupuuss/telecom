@@ -129,7 +129,6 @@ class BinaryMatrix private constructor(private val matrix: Array<out ByteArray>)
          */
         fun column(vararg values: Byte) = BinaryMatrix(Array(values.size) { byteArrayOf(values[it]) })
 
-
         /**
          * @param values for vector (only zeros and ones)
          * @return one-row BinaryMatrix for given values

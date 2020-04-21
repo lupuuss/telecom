@@ -1,9 +1,7 @@
 package telecom
 
 import telecom.coding.Coder
-import java.io.File
 import java.lang.Exception
-import java.nio.file.Path
 
 fun main(args: Array<String>) {
 
@@ -27,7 +25,7 @@ fun main(args: Array<String>) {
     val output = Utils.generateOutputFileForInput(inputPath, operation).outputStream()
     val input = inputPath.toFile().inputStream()
 
-    val typeVerb = operation.toString().let { it.substring(0, it.lastIndex) }
+    val typeVerb = operation.toString().dropLast(1)
     val errorCorrectionTypeString =
         type.toString().toLowerCase().let { it.substring(0, it.indexOf("error")) } + " error"
 
